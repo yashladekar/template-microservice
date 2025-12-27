@@ -1,33 +1,21 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Load .env first
-import logger from './utils/logger';
+dotenv.config();
 
-import app from './app';
+import app from "./app";
+import { env } from "./config/env";
+import logger from "./utils/logger";
 
-import { env } from './config/index';
-const PORT = env.PORT;
-
-
-
-const server = app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT} as ${env.NODE_ENV} as http://localhost:${PORT}`);
+const server = app.listen(env.PORT, () => {
+    logger.info(`API Gateway running on port ${env.PORT}`);
 });
 
-// Graceful Shutdown Logic
-const gracefulShutdown = async () => {
-    logger.info('Received kill signal, shutting down gracefully');
+const shutdown = () => {
+    logger.warn("Shutting down API Gateway...");
     server.close(() => {
-        logger.info('Closed out remaining connections');
+        logger.info("Server closed");
         process.exit(0);
     });
-
-    // Force close if it takes too long (e.g., 10 seconds)
-    setTimeout(() => {
-        logger.error('Could not close connections in time, forcefully shutting down');
-        process.exit(1);
-    }, 10000);
 };
 
-// Listen for termination signals
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
