@@ -28,6 +28,12 @@ export const updateUser: RequestHandler = asyncHandler(async (req: Request, res:
 });
 
 export const deleteUser: RequestHandler = asyncHandler(async (req: Request, res: Response) => {
+    const { userId, role } = req.auth!;
+
+    if (role !== "ADMIN" && userId !== req.params.id) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
     await userService.delete(req.params.id!);
     res.status(204).send();
 });

@@ -2,6 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { env } from "../config/env";
 
 export function authContext(req: Request, _res: Response, next: NextFunction) {
+    // Check health endpoint FIRST, before any auth checks
+    if (req.path.startsWith("/health")) {
+        return next();
+    }
+
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
 
