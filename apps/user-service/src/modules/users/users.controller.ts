@@ -18,6 +18,12 @@ export const getUser: RequestHandler = asyncHandler(async (req: Request, res: Re
 });
 
 export const updateUser: RequestHandler = asyncHandler(async (req: Request, res: Response) => {
+    const { userId, role } = req.auth!;
+
+    if (role !== "ADMIN" && userId !== req.params.id) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
     res.json(await userService.update(req.params.id!, req.body));
 });
 
