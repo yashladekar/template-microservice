@@ -8,6 +8,7 @@ function withAuthHeaders() {
                 proxyReq.setHeader("x-user-id", req.auth.userId);
                 proxyReq.setHeader("x-user-email", req.auth.email);
                 proxyReq.setHeader("x-user-role", req.auth.role);
+                proxyReq.setHeader("x-internal-token", env.INTERNAL_TOKEN);
             }
 
             if (req.headers["x-request-id"]) {

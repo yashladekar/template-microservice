@@ -26,8 +26,9 @@ app.use(requestId);
 app.use(pinoHttp({ logger }));
 app.use(rateLimiter);
 
-app.use("/health", healthRoutes);
+app.use("/health", healthRoutes); // BEFORE auth
 app.use("/api", proxyRoutes);
+
 
 app.use(errorHandler);
 

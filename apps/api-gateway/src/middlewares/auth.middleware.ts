@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "./error.middleware";
+import { env } from "../config/env";
 
 interface JwtPayload {
     sub: string;
@@ -24,16 +25,14 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
     const auth = req.headers.authorization;
 
     if (!auth?.startsWith("Bearer ")) {
-        throw new AppError("Unauthorized", 401);
+        return next(new AppError("Unauthorized", 401));
     }
-
     const token = auth.replace("Bearer ", "");
 
     try {
-        const payload = jwt.verify(
-            token,
-            process.env.JWT_PUBLIC_KEY!
-        ) as JwtPayload;
+
+
+        const payload = jwt.verify(token, env.JWT_PUBLIC_KEY) as JwtPayload;
 
         // 🔐 Attach trusted context to request
         req.auth = {
@@ -44,6 +43,7 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
 
         next();
     } catch {
-        throw new AppError("Invalid token", 401);
+        return next(new AppError("Invalid token", 401));
     }
 }
+
