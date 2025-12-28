@@ -25,3 +25,6 @@ pnpm dev
 
 Gateway handles auth, rate limits, routing  
 Services handle business logic only
+
+psql -U postgres -W
+root
